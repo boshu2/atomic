@@ -323,3 +323,5 @@ Learnings from
 - [Ralph Wiggum Method](https://ghuntley.com/ralph/)
 - [OpenAI Codex Cookbook](https://github.com/openai/openai-cookbook)
 - [HumanLayer](https://github.com/humanlayer/humanlayer)
+- [Beads](https://github.com/steveyegge/beads) - Git-backed issue tracking for AI workflows
+- [Vibe Coding](https://itrevolution.com/product/vibe-coding-book/) (Gene Kim & Steve Yegge) - Methodology for working with AI agents

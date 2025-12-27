@@ -1,11 +1,11 @@
-# CLAUDE.md
+# Atomic - Development Guide
 
-## [PROJECT_NAME]
+## Project Purpose
 
-## Overview
-[1-2 sentences describing the project purpose]
+[1-2 sentences describing the project purpose - update as appropriate]
 
 ## Monorepo Structure
+
 | Path              | Type        | Purpose                     |
 | ----------------- | ----------- | --------------------------- |
 | `apps/web`        | Next.js App | Main web application        |
@@ -16,6 +16,7 @@
 ## Quick Reference
 
 ### Commands by Workspace
+
 ```bash
 # Root (orchestration)
 pnpm dev                    # Start all services
@@ -25,103 +26,234 @@ pnpm build                  # Build everything
 pnpm --filter web dev       # Start web only
 pnpm --filter web test      # Test web only
 
-# API (apps/api)  
+# API (apps/api)
 pnpm --filter api dev       # Start API only
 pnpm --filter api test      # Test API only
 ```
 
 ### Environment
+
 - Copy `.env.example` → `.env.local` for local development
 - Required vars: `DATABASE_URL`, `API_KEY`
 
 ## Progressive Disclosure
+
 Read relevant docs before starting:
 - `docs/onboarding.md` — First-time setup
 - `docs/architecture.md` — System design decisions
 - `docs/[app-name]/README.md` — App-specific details
 
 ## Universal Rules
+
 1. Run `pnpm typecheck && pnpm lint && pnpm test` before commits
 2. Keep PRs focused on a single concern
 3. Update types in `packages/shared` when changing contracts
-```
 
----
-
-## Anti-Patterns to Avoid
-
-### ❌ Don't: Inline Code Style Guidelines
-```markdown
-<!-- BAD: This bloats context and duplicates linter functionality -->
-## Code Style
-- Use 2 spaces for indentation
-- Always use semicolons
-- Prefer const over let
-- Use arrow functions for callbacks
-- Maximum line length: 100 characters
-...
-```
-
-### ✅ Do: Reference Tooling
-```markdown
 ## Code Quality
+
 Formatting and linting are handled by automated tools:
 - `pnpm lint` — ESLint + Prettier
 - `pnpm format` — Auto-fix formatting
 
 Run before committing. Don't manually check style—let tools do it.
+
+---
+
+# Vibe-Coding Methodology
+
+## The One Rule
+
+> Reality does not match your model? **Update the model.**
+
+Not the code. Not the tests. Not the plan. **The model in your head.**
+
+---
+
+## Opus 4.5 Behavioral Standards
+
+**Default to Action:**
+When uncertain, act rather than asking for clarification. Make reasonable assumptions, implement, and verify. If wrong, adjust.
+
+**Use Parallel Tool Calls:**
+When multiple operations are independent (file reads, searches, API calls), batch them in a single response. Don't serialize what can parallelize.
+
+**Investigate Before Answering:**
+When you don't know something, investigate using available tools before saying you can't help. Read files, search code, check documentation.
+
+---
+
+## Explicit Reasoning Protocol (L1-L3 Only)
+
+For uncertain work, externalize predictions:
+
+```
+DOING: [current action]
+EXPECT: [predicted outcome]
+IF WRONG: [planned adjustment]
+
+RESULT: [actual outcome]
+MATCHES: [yes/no]
+THEREFORE: [continue/stop/pivot]
 ```
 
 ---
 
-### ❌ Don't: Include Task-Specific Instructions
-```markdown
+## On Failure
 
-## Database Migrations
-When creating a new migration:
-1. Run `prisma migrate dev --name descriptive_name`
-2. Update the schema in `prisma/schema.prisma`
-3. Run `prisma generate` to update the client
-4. Add seed data if necessary in `prisma/seed.ts`
-...
-```
-
-### ✅ Do: Use Progressive Disclosure
-```markdown
-## Documentation
-| Topic                 | Location             |
-| --------------------- | -------------------- |
-| Database & migrations | `docs/database.md`   |
-| API design            | `docs/api.md`        |
-| Deployment            | `docs/deployment.md` |
-
-Read relevant docs before starting work on those areas.
-```
+When something fails, surface it immediately. Don't hide errors or pretend success:
+- Show the actual error
+- State what you expected
+- Suggest the most likely cause
+- Propose a fix or investigation path
 
 ---
 
-### ❌ Don't: Auto-Generate with /init
-The `/init` command produces generic, bloated files. Your `CLAUDE.md` affects **every single artifact** Claude produces—it's the highest leverage point of the entire harness.
+## Vibe Levels (Trust Calibration)
 
-### ✅ Do: Craft It Manually
-Spend time thinking about each line. Ask yourself:
-- Is this universally applicable to ALL tasks?
-- Can Claude infer this from the codebase itself?
-- Would a linter/formatter handle this better?
-- Can I point to a doc instead of inlining this?
+| Level | Trust | Verify | Use For | Example |
+|-------|-------|--------|---------|---------|
+| **5** | 95% | Final only | Format, lint | Fix typo |
+| **4** | 80% | Spot check | Boilerplate | Add CRUD endpoint |
+| **3** | 60% | Key outputs | CRUD, tests | New feature |
+| **2** | 40% | Every change | Features | Integration |
+| **1** | 20% | Every line | Architecture | New system |
+| **0** | 0% | N/A | Research | Exploration |
 
 ---
 
-## Optimization Checklist
+## The 5 Core Metrics
 
-Before finalizing your `CLAUDE.md`, verify:
+| Metric | Question | Target | Red Flag |
+|--------|----------|--------|----------|
+| **Iteration Velocity** | How tight are feedback loops? | >3/hour | <1/hour |
+| **Rework Ratio** | Building or debugging? | <50% | >70% |
+| **Trust Pass Rate** | Does code stick? | >80% | <60% |
+| **Debug Spiral Duration** | How long stuck? | <30min | >60min |
+| **Flow Efficiency** | What % productive? | >75% | <50% |
 
-- [ ] **Under 100 lines** (ideally under 60)
-- [ ] **Every instruction is universally applicable** to all tasks
-- [ ] **No code style rules** (use linters/formatters instead)
-- [ ] **No task-specific instructions** (use progressive disclosure)
-- [ ] **No code snippets** (use `file:line` pointers)
-- [ ] **Clear verification commands** that Claude can run
-- [ ] **Progressive disclosure table** pointing to detailed docs
-- [ ] **Minimal project structure** (just enough to navigate)
+---
 
+## The 12 Failure Patterns
+
+### Inner Loop (Seconds-Minutes)
+1. **Tests Passing Lie** - Tests pass but don't validate
+2. **Premature Abstraction** - Solving problems you don't have
+3. **Debug Loop Spiral** - Same fix failing repeatedly
+
+### Middle Loop (Hours-Days)
+4. **Plan-Reality Gap** - Plan doesn't match implementation
+5. **Scope Creep** - Features growing beyond plan
+6. **Bridge Torching** - Breaking backwards compatibility
+7. **Eldritch Horror Merge** - Massive PRs nobody can review
+
+### Outer Loop (Days-Weeks)
+8. **Context Amnesia** - Forgetting session insights
+9. **Instruction Drift** - Wandering from user intent
+10. **Memory Tattoo Decay** - Knowledge not persisted
+11. **Trust Erosion** - Repeated failures lower trust
+12. **Requirement Telephone** - Requirements mutating through layers
+
+---
+
+## The 10 Laws of an Agent
+
+1. **Reality First** - Reality != model? Update model.
+2. **Explicit Predictions** - State expected outcomes before acting.
+3. **Git Discipline** - Add files individually, semantic commits.
+4. **TDD with Tracers** - Validate assumptions before building.
+5. **Guide with Workflows** - Use /research, /plan, /implement.
+6. **Classify Vibe Level** - L0-L5 before each task.
+7. **Measure and Calibrate** - Track 5 metrics, adjust.
+8. **Session Protocol** - One feature focus per session.
+9. **Protect Feature Definitions** - Features are contracts.
+10. **Explicit Reasoning** - For L1-L3, externalize thinking.
+
+---
+
+## Autonomy Boundaries
+
+**Proceed autonomously:**
+- Implementing approved plans
+- Running tests and fixing failures
+- Reading files to understand context
+- Making git commits with proper messages
+
+**Punt to user:**
+- Deleting user data
+- Pushing to main/master
+- Changing architectural decisions
+- Spending money (API calls, services)
+- Security-sensitive changes
+
+---
+
+## Context Window Discipline
+
+**The 40% Rule:** Start planning handoff at 40% context usage.
+
+| Context % | Action |
+|-----------|--------|
+| 0-20% | Deep work mode |
+| 20-40% | Normal operation |
+| 40-60% | Plan handoff, save state |
+| 60-80% | Emergency save only |
+| 80%+ | Stop, save, new session |
+
+---
+
+## Slash Commands (Reference)
+
+| Command | Purpose | Token Budget |
+|---------|---------|--------------|
+| `/research` | Deep exploration | 40-60k |
+| `/plan` | Precise specifications | 40-60k |
+| `/implement` | Execute approved plan | 60-80k |
+| `/bundle-save` | Compress findings | 500-1k output |
+| `/bundle-load` | Resume context | Load bundle |
+| `/retro` | Session retrospective | 5-10k |
+| `/learn` | Extract patterns | 5-10k |
+
+---
+
+## Beads Issue Tracking
+
+This project uses [Beads](https://github.com/steveyegge/beads) for git-backed issue tracking.
+
+**The Workflow:**
+```
+/research "topic" → .agents/research/YYYY-MM-DD-topic.md
+        ↓
+/plan .agents/research/... → .agents/plans/... + beads issues
+        ↓
+bd ready → shows unblocked work
+        ↓
+/implement → executes one issue at a time
+```
+
+**Key Commands:**
+```bash
+bd ready                             # Find unblocked issues
+bd show <id>                         # View issue details
+bd update <id> --status in_progress  # Start work
+bd comment <id> "Progress update"    # Document progress
+bd close <id> --reason "Completed"   # Finish
+bd sync                              # Push to git
+```
+
+**Why Beads:**
+- **Survives compaction** - Issues persist across context resets
+- **Dependency-aware** - `bd ready` only shows executable work
+- **Git-backed** - Issues versioned with code
+- **AI-native** - Designed for agent workflows
+
+---
+
+## Communication Standards
+
+- **Direct:** State facts, skip hedging
+- **Objective:** Focus on technical accuracy
+- **Brief:** Context is expensive
+
+---
+
+**Methodology Last Updated:** 2025-12-17
